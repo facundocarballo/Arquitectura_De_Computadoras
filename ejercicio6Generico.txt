@@ -1,0 +1,49 @@
+;;;.06.- Realizar la sumatoria s = n1 + n2 + n3 +... + nn,
+;;; siendo datos las direcciones de n1, nn y s.
+
+ROM                 EQU         $C000
+RAM                 EQU         $0000
+RESET               EQU         $FFFE
+
+                    ORG         RAM
+direccionDeS        RMB         2
+direccionDeN1       RMB         2
+direccionDeNN       RMB         2
+acumulador          RMB         2
+
+Main:
+                    ORG         ROM
+                    CLR         acumulador
+                    LDX         direccionDeN1+
+                    INX
+                    CPX         direccionDeNN
+
+;;; antes de saltar al loop compruebo
+;;; que voy a tener por lo menos una suma.
+;;; es decir que esos n1 + n2 + ... + nn sean al menos dos numeros.
+
+                    BLS         inicio
+                    LDAA        0,X
+                    STAA        direccionDeS
+
+;;; de ser solamente un numero, que se guarde directamente el numero
+;;; contenido en la direccionDeN1 dentro de direccionDeS
+
+fin                 BRA         fin      
+
+inicio:
+                    DEX
+loop:
+                    LDAA        0,X
+                    LDAB        1,X
+                    ABA
+                    ADDA        acumulador
+                    STAA        acumulador
+                    INX
+                    CPX         direccionDeNN
+                    BLS         loop
+                    LDAA        acumulador
+                    STAA        direccionDeS
+                    BRA         fin
+
+
