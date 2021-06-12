@@ -1,0 +1,38 @@
+;;; ANTERIOR: s = n1 + n2 + n3 +... + nn
+;;; 5.07.- 
+;;; Idem anterior, siendo datos las direcciones de n, n1 y s.
+;;; (n = cantidad de sumandos )
+
+ROM                 EQU         $C000
+RAM                 EQU         $0000
+RESET               EQU         $FFFE
+
+                    ORG         RAM
+direccionN          RMB         2
+direccionN1         RMB         2
+direccionS          RMB         2
+direccionAcu        RMB         2
+
+Main:
+                    ORG         ROM
+                    CLR         direccionAcu
+                    LDX         #direccionN1
+                    LDAA        0,X
+                    STAA        direccionAcu
+                    DEC         direccionN
+                    BGE         loop
+;;; no hago el LDDA direccionAcu porque el registro ya viene
+;;; desde el loop con el contenido total del acumulador
+guardarEnS          STAA        direccionS                    
+fin                 BRA         fin
+loop:
+                    INX
+                    LDAA        0,X
+                    ADDA        direccionAcu
+                    STAA        direccionAcu
+                    DEC         direccionN
+                    BGE         loop
+                    BRA         guardarEnS
+
+                    ORG         RESET
+                    DW          Main
