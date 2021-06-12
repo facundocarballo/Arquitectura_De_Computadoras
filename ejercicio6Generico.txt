@@ -14,9 +14,9 @@ acumulador          RMB         2
 Main:
                     ORG         ROM
                     CLR         acumulador
-                    LDX         direccionDeN1+
+                    LDX         #direccionDeN1
                     INX
-                    CPX         direccionDeNN
+                    CPX         #direccionDeNN
 
 ;;; antes de saltar al loop compruebo
 ;;; que voy a tener por lo menos una suma.
@@ -40,7 +40,7 @@ loop:
                     ADDA        acumulador
                     STAA        acumulador
                     INX
-                    CPX         direccionDeNN
+                    CPX         #direccionDeNN
                     BLS         loop
                     LDAA        acumulador
                     STAA        direccionDeS
