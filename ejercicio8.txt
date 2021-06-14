@@ -1,0 +1,33 @@
+;;; suma de dos numeros de 16 bits
+
+ROM                 	EQU         	$C000
+RAM                 	EQU         	$0000
+RESET               	EQU         	$FFFE
+			
+			ORG		RAM
+NUM1			RMB		2
+NUM2			RMB		2
+RES			RMB		3
+
+Init:
+
+;;; esto lo hacemos para sumar en HEXA 0102 + 0102 = 0204
+
+			ORG		NUM1
+			DB		1,2
+			
+			ORG		NUM2
+			DB		1,2
+
+Main:
+
+			ORG		ROM
+			CLR		RES	; limpia el primer byte de RES
+;;; lo limpiamos por las dudas de que exista carry
+			LDD		NUM1	; usamos el acumulador 'D' porque es de 16 bits
+;;; recordar que el acumulador 'D' es la concatenacion del 'A' y el 'B'
+			ADDD		NUM2	
+			BCC		noCarry
+			INC		RES	; incrementa en 1 el primer byte de RES
+noCarry			STD		RES+1	; guardamos el contenido de 'D' desde el 2do byte de RES
+fin			BRA		fin		

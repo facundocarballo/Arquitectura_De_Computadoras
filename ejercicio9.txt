@@ -1,0 +1,38 @@
+;;; ejercicio 9, SUMA DE 2 NUMEROS DE N BITS
+
+ROM		EQU		$C000
+RAM		EQU		$0000
+RESET		EQU		$FFFE
+BYTES		EQU		4
+
+		ORG		RAM
+NUM1		RMB		BYTES
+NUM2		RMB		BYTES
+RES		RMB		BYTES+1
+		
+Init:
+
+		ORG		NUM1
+		DB		1,2,3,4
+		ORG		NUM2
+		DB		1,2,3,4
+
+;;; 01020304 + 01020304 = 02040608
+
+Main:
+		ORG		ROM
+		CLR		RES
+		LDX		#NUM1+BYTES-1
+		CLC
+		LDAA		#BYTES
+loop		LDAB		0,X
+		ADDB		BYTES,X
+		STAB		(BYTES*2)+1,X
+		DEX
+		DECA
+		BNE		loop
+		BCC		noCarry
+		INC		RES
+noCarry		BRA		noCarry
+		
+		
