@@ -1,0 +1,35 @@
+;;; 5.10  Dados 3 números binarios sin signo, hallar el máximo.
+
+ROM         EQU         $C000
+RAM         EQU         $0000
+RESET       EQU         $FFFE
+LCD         EQU         $1040
+
+            ORG         RAM
+num1        RMB         1
+num2        RMB         1
+num3        RMB         1
+aux         EQU         3
+
+Init:
+            ORG         num1
+            DB          1
+            ORG         num2
+            DB          85
+            ORG         num3
+            DB          129
+Main:
+            ORG         ROM
+            LDX         #num1
+	        LDAB	    #aux               
+esMayor     LDAA        0,X
+loop        DECB         
+            BEQ         listo
+	        INX
+            CMPA        0,X
+            BMI         esMayor     ; salta si se enciende el flag Negativo 
+            BRA         loop
+listo       BRA		    listo
+
+;;; el numero mayor queda almacenado en el registro 'A'
+            
