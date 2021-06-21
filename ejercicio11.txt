@@ -1,0 +1,27 @@
+;;; Ejercicio 11
+;;; - Dado un número con signo, devolver el módulo o valor absoluto del 
+;;;   mismo. Suponer que los negativos se almacenan en complemento a la base.
+
+ROM         EQU         $C000
+RAM         EQU         $0000
+RESET       EQU         $FFFE
+LCD         EQU         $1040
+
+            ORG         RAM
+num         RMB         1
+
+Init:
+            ORG         num
+            DB          -50
+Main:
+            ORG         ROM
+            CLR         LCD
+            LDAA        num
+            BMI         esNegativo
+            ADDA        '#0
+            STAA        LCD
+fin         BRA         fin
+esNegativo  NEGA        
+            ADDA        '#0
+            STAA        LCD
+            BRA         fin

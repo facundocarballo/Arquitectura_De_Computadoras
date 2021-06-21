@@ -1,0 +1,45 @@
+;;; 12.-Dada una lista de números binarios en memoria, ordenarlos en forma 
+;;; creciente en los mismos lugares de memoria, siendo conocidas las direcciones 
+;;; del primer y del último dato en memoria. 
+
+;;; de menor a mayor
+
+ROM             EQU         $C000
+RAM             EQU         $0000
+RESET           EQU         $FFFE
+
+                ORG         RAM
+dirNumIni       EQU         $0001
+dirNumFin       EQU         $0008
+aux	            RMB		    1
+
+Main:
+		        ORG		    ROM
+
+;;; obtenemos la cantidad de numeros que vamos a ordenar y lo almacenamos en aux
+		
+		        LDAA		#dirNumFin
+		        SUBA		#dirNumIni
+		        STAA		aux
+
+		        LDX		    #dirNumIni
+		
+loop		    LDAA		0,X
+		        CMPA		1,X
+		        BGT		    aMayorX
+continuamos	    INX
+		        CPX		    #dirNumFin      ;;; de esta manera compara la direccion del indexRegister con la direccion de 'dirNumFin'
+		        BEQ		    finRecorrido
+		        BRA		    loop
+
+aMayorX		    LDAB		1,X
+		        STAA		1,X
+		        STAB		0,X
+		        BRA		    continuamos
+
+finRecorrido	DEC		    aux
+		        BEQ		    fin
+		        LDX		    #dirNumIni
+		        BRA		    loop
+
+fin		        BRA		    fin
