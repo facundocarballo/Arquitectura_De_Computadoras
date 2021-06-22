@@ -1,0 +1,48 @@
+;;; Ejercicio 13.- Repetir el ejercicio anterior considerando conocidas la dirección del 
+;;; primer dato y la cantidad total de datos. 
+
+ROM             EQU             $C000
+RAM             EQU             $0000
+RESET           EQU             $FFFE
+
+                ORG             RAM
+dirIni          EQU             $0001
+
+;;; necesitamos reservar dos posiciones de memoria para almacenar la cantidad de numeros a ordenar
+;;; y lo mismo obviamente para los recorridos, que vendria siendo una especie de auxiliar.
+
+cantidad        EQU             $0010
+recorridos      EQU             $0011
+
+Init:
+;;; decimos cuantos numeros vamos a ordenar.
+
+                ORG             cantidad
+                DB              8
+                ORG             recorridos
+                DB              8
+
+Main:
+                ORG             ROM
+                LDX             #dirIni
+loop            LDAA            0,X
+                CMPA            1,X
+                BGT             aMayorX
+continuar       INX
+                DEC             cantidad
+                BEQ             finRecorrido
+                BRA             loop
+
+aMayorX         LDAB            1,X
+                STAA            1,X
+                STAB            0,X
+                BRA             continuar
+
+finRecorrido    LDAA            #8          ;;; este tiene que ser el mismo numero que usamos en el Init
+                STAA            cantidad
+                DEC             recorridos
+                BEQ             fin
+                LDX             #dirIni
+                BRA             loop
+
+fin             BRA             fin

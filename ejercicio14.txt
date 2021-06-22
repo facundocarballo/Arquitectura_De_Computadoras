@@ -1,0 +1,48 @@
+;;; Ejercicio 14.- Dado un número binario de 8 bits, almacenado en una posición de 
+;;; memoria conocida, convertir el mismo en dos caracteres ASCII representativos 
+;;; de los dos dígitos hexadecimales que lo forman. (las representaciones literales 
+;;; de los 6 últimos dígitos hexadecimales deberán ser letras mayúsculas). Los 
+;;; resultados se almacenan en direcciones de memoria también conocidas.
+
+ROM             EQU             $C000
+RAM             EQU             $0000
+RESET           EQU             $FFFE
+
+                ORG             RAM
+dirNum          EQU             $0001
+dir1            EQU             $0010
+dir2            EQU             $0020
+
+Init:
+                ORG             dirNum
+                DB              %11011110   ;;; 128 + 64 + 16 + 8 + 4 + 2 = 222 (decimal) ==> DE (hexa)
+;;;                             %11110000   ;;; 128 + 64 + 32 + 16        = 224 ;;; operacion AND
+;;;                             %11010000   ;;; 208 / 16 = 13(decimal) =>>> D (hexa)
+
+;;;                             %10111110
+;;;                             %00001111
+;;;                             %00001110   ;;; 14 (decimal) =>>> E (hexa)
+                                
+Main:
+                ORG             ROM
+                LDAA            dirNum
+                ANDA            #%11110000
+                CLC
+                ASRA
+                ASRA
+                ASRA
+                ASRA
+                ANDA            #%00001111
+                STAA            dir1
+                LDAA            dirNum
+                ANDA            #%00001111
+                CLC
+                ASLA
+                ASLA
+                ASLA
+                ASLA
+                STAA            dir2
+fin             BRA             fin
+
+;;; se guardan los valores 0d ($0010) e0 ($0020)
+;;; si quisieramos que se guarde d0, tendriamos que hacer antes del segundo ANDA ejecutar 4 ASLA y luego un AND con #%11110000
