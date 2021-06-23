@@ -1,0 +1,58 @@
+;;; 15.- Se desea convertir a decimal un numero binario de ocho bits 
+;;; almacenado en la posición de memoria $0000. El resultado debe quedar 
+;;; almacenado de la siguiente forma: 
+;;; Posición $0001 = CENTENAS. 
+;;; Posición $0002 = DECENAS 
+;;; Posición $0003 = UNIDADES. 
+
+ROM         EQU         $C000
+RAM         EQU         $0000
+RESET       EQU         $FFFE
+
+            ORG         RAM
+numBina     EQU         $0000
+centenas    EQU         $0001
+decenas     EQU         $0002
+unidades    EQU         $0003
+
+
+Init:
+            ORG         numBina
+            DB          31
+Main:      
+	        CLRA
+	        LDAB	    numBina
+	        LDX		    #100
+	        IDIV
+	        BEQ		    menorCien
+	        XGDX
+	        STAB	    centenas
+	        XGDX
+	        BRA		    contiDece
+
+menorCien
+	        STAA	    centenas
+	    
+contiDece
+	        LDX		    #10
+	        IDIV	
+            BEQ		    menorDiez
+	        XGDX
+            STAB	    decenas
+            XGDX
+	        BRA		    contiUni
+
+menorDiez
+	        STAA	    decenas
+
+contiUni
+	        ANDB	    #1
+	        BEQ		    cero
+	        STAB	    unidades
+	        BRA		    fin
+
+cero
+	        STAA	    unidades
+	        BRA		    fin	
+
+fin         BRA         fin
