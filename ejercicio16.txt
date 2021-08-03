@@ -1,0 +1,29 @@
+;;; 5.16.- Se desea evaluar el dato almacenado en la posición de 
+;:; memoria $0000. 
+;;; Para ello en la posición de memoria $0001 debe aparecer almacenado: 
+;;; “>” si el valor es mayor que 128. 
+;;; “=” si el valor es 128. 
+;;; “<” si el valor es menor a 128.
+
+ROM     EQU     $C000
+RWM     EQU     $0000
+RESET   EQU     $FFFE
+
+        ORG     ROM
+Init:
+        LDAA    $00
+        LDAB    #128  
+        CBA
+        BGT     mayor
+        BEQ     cero
+        ;;; sino saltó, es menor
+        LDAB    #60
+guarda  STAB    $01
+fin     BRA     fin
+mayor   LDAB    #62
+        BRA     guarda
+cero    LDAB    #61
+        BRA     guarda
+
+        ORG     RESET
+        DW      Init

@@ -1,0 +1,133 @@
+;;; 5.18.- Dado un vector formado por elementos numéricos naturales, del que se 
+;;; conocen la dirección de su primer elemento y la dirección del ultimo elemento, 
+;;; determinar si el mismo contiene un valor numérico que se conoce como dato. 
+;;; Si el valor dado se encuentra una sola vez, indicar la posición del mismo dentro 
+;;; del vector. Si se encuentra más de una vez, indicar la posición en que se lo 
+;;; encontró por primera vez y la cantidad de veces que se repite dicho elemento. 
+;;; Si no se lo encuentra, indicar dicha circunstancia de alguna forma visible. 
+
+
+ROM         EQU         $C000
+RWM         EQU         $0000
+RESET       EQU         $FFFE
+LCD         EQU         $1040
+
+           
+           
+            ORG         RWM
+dirIni      RMB         2
+dirFin      RMB         2
+dirDato     RMB         2
+dirInterior RMB         2
+contadorD   RMB         2
+dato        RMB         1
+contador    RMB         1
+encontrado  RMB         1
+auxFin      RMB         1
+
+;;; Explicacion:
+;;; En dirDato almacenamos la dirección de memoria fisica que contiene al dato
+;;; En dirInterior almacenamos la dirección interior del vector que contiene al dato
+;;; tomando como posicion inicial interior del vector la $0000 en adelante...
+;;; Direccion fisica != Direccion interior del vector
+;;; Usamos contadorD para calcular esa direccion interior
+;;; dato es el valor dato que nos da el ejercicio.
+;;; contador nos indica cuantas veces se repitio el dato en el vector.
+;;; encontrado si esta en 1 quiere decir que lo encontro, si esta en 0 no lo encontro.
+;;; auxFin nos indica si es la ultima que leemos o no (si esta en 1 es la ultima, si esta en 0 no).
+;;; Si no se encontro el dato sale por LCD (Dispositivo I/O) un aviso.
+
+            ORG         ROM
+Init:   
+            CLRA
+            CLRB
+            STAA        contador
+            STAA        auxFin
+            STAA        encontrado
+            STD         contadorD
+    
+Main:
+            LDX         dirIni
+Loop:
+            XGDX
+            CPD         #dirFin
+            XGDX
+            BEQ         LlegoDirFin
+Continuar:        
+            LDAA        0,X
+            CMPA        #dato
+            BEQ         EsIgual
+
+RetornoEsIgual:
+            LDAA        auxFin
+            CMPA        #1
+            BEQ         PreFin
+            INX
+            INC         contadorD
+            BRA         Loop
+fin         BRA         fin       
+            
+LlegoDirFin:
+            LDAA        #1
+            STAA        auxFin
+            CLRA   
+            BRA         Continuar
+
+EsIgual:
+;;; nos fijamos primero si ya se habia encontrado antes
+            LDAA        contador
+            CMPA        #0
+            BEQ         PrimeraVez
+RetornoPrimeraVez:
+            INCA
+            STAA        contador
+            CLRA
+            BRA         RetornoEsIgual
+
+PrimeraVez:
+;;; en el acumulador 'A' esta el valor de contador
+            PSHA
+            LDAB        #1
+            STAB        encontrado
+            LDD         contadorD
+            STD         dirInterior
+            XGDX
+            STD         dirDato
+            XGDX
+            PULA
+            BRA         RetornoPrimeraVez
+
+PreFin:
+            LDAA        encontrado
+            CMPA        #1
+            BEQ         fin
+            LDAA        #78
+            STAA        LCD
+            LDAA        #79
+            STAA        LCD
+            LDAA        #32
+            LDAA        #69
+            STAA        LCD
+            LDAA        #78
+            STAA        LCD
+            LDAA        #67
+            STAA        LCD
+            LDAA        #79
+            STAA        LCD
+            LDAA        #78
+            STAA        LCD
+            LDAA        #84
+            STAA        LCD
+            LDAA        #82
+            STAA        LCD
+            LDAA        #65
+            STAA        LCD
+            LDAA        #68
+            STAA        LCD
+            LDAA        #79
+            STAA        LCD
+            BRA         fin
+
+
+            ORG         RESET
+            DW          ROM

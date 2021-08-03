@@ -1,0 +1,101 @@
+;;; 5.17.- Dado un vector formado por elementos numéricos naturales, 
+;;; del que se 
+;;; conocen la dirección de su primer elemento y la dirección del 
+;;; ultimo elemento, 
+;;; encontrar el valor máximo incluido en el mismo. Si el valor dado se
+;;; encuentra 
+;;; una sola vez, indicar la posición del mismo dentro del vector. Si se
+;;; encuentra 
+;;; más de una vez, indicar la posición en que se lo encontró por 
+;;; primera vez y la 
+;;; cantidad de veces que se repite dicho elemento. 
+
+ROM         EQU         $C000
+RWM         EQU         $0000
+RESET       EQU         $FFFE
+
+            ORG         RWM
+dirIni      RMB         2
+dirFin      RMB         2
+dirMayor    RMB         2
+contadorD   RMB         2
+dirInterior RMB         2
+mayor       RMB         1
+auxFin      RMB         1
+contador    RMB         1
+
+;;; Explicacion:
+;;; En dirMayor almacenamos la dirección de memoria fisica que contiene al primer mayor numero del vector
+;;; En dirInterior almacenamos la dirección interior del vector que contiene al primer mayor numero del mismo
+;;; tomando como posicion inicial interior del vector la $0000 en adelante...
+;;; Direccion fisica != Direccion interior del vector
+;;; Usamos contadorD para calcular esa direccion interior
+;;; mayor almacena el mayor valor del vector encontrado, nos sirve para poder ir comparando con los valores que
+;;; vamos encontrando en el vector.
+;;; contador nos indica cuantas veces se repitio el mayor numero del vector en el mismo.
+;;; auxFin nos indica si es la ultima que leemos o no (si esta en 1 es la ultima, si esta en 0 no).
+
+
+            ORG         ROM
+Init:   
+            CLRA
+            CLRB
+            STAA        contador
+            STAA        auxFin
+            STD         contadorD
+    
+Main:
+            LDX         dirIni
+            LDAA        0,X
+            STAA        mayor
+            XGDX        
+            STD         dirMayor
+            XGDX
+
+Loop:
+            INX
+            INC         contadorD         
+            XGDX
+            CPD         #dirFin
+            XGDX
+            BEQ         LlegoDirFin
+Continuar:
+            LDAA        0,X
+            CMPA        mayor
+            BHI         EsMayor
+            BEQ         EsIgual
+            LDAA        #1
+            CMPA        auxFin
+            BEQ         fin
+            BRA         Loop
+fin         BRA         fin
+
+EsMayor: 
+            STAA        mayor
+            XGDX
+            STD         dirMayor
+            XGDX
+            LDD         contadorD
+            STD         dirInterior
+            LDAA        #1
+            CMPA        auxFin
+            BEQ         fin
+            CLRA
+            BRA         Loop
+
+EsIgual:
+            INC         contador
+            LDAA        #1
+            CMPA        auxFin
+            BEQ         fin
+            CLRA
+            BRA         Loop
+
+LlegoDirFin:
+            LDAA        #1
+            STAA        auxFin 
+            CLRA     
+            BRA         Continuar 
+
+            ORG         RESET
+            DW          ROM

@@ -1,0 +1,67 @@
+;;; 5.19.- Dado un vector formado por caracteres ASCII, del que se conocen la 
+;;; dirección de su primer elemento y la cantidad de elementos, obtener otro 
+;;; vector en el que solamente se incluyan aquellos caracteres del primero que 
+;;; representen letras y/o números. 
+
+ROM                 EQU         $C000
+RWM                 EQU         $0000
+RESET               EQU         $FFFE
+
+                    ORG         RWM
+dirIni              RMB         2
+dirIniNuevo         RMB         2
+cantidad            RMB         1
+auxCant             EQU         0
+minNum              EQU         48
+maxNum              EQU         57
+minCaracMAYUS       EQU         65
+maxCaracMAYUS       EQU         90
+minCaracMinuscula   EQU         97
+maxCaracMinuscula   EQU         122
+            
+;;; Codigo ASCII: 
+;;;     48 al 57  (NUMEROS DEL 0 al 9)
+;;;     65 al 90  (Caracteres MAYUSCULA)
+;;;     97 al 122 (Caracteres minuscula)
+
+                    ORG         ROM
+                    LDX         dirIni
+                    LDY         dirIniNuevo
+Loop:            
+                    LDAA        0,X      
+                    CMPA        minNum
+                    BLO         NoEsNada
+                    CMPA        maxNum
+                    BLO         EsValido
+                    CMPA        minCaracMAYUS
+                    BLO         NoEsNada
+                    CMPA        maxCaracMAYUS
+                    BLO         EsValido
+                    CMPA        minCaracMinuscula
+                    BLO         NoEsNada
+                    CMPA        maxCaracMinuscula
+                    BLO         EsValido
+Continuar:
+                    INX
+                    INC         auxCant
+                    BRA         Loop
+fin                 BRA         fin
+
+NoEsNada:
+                    LDAB        auxCant
+                    CMPB        cantidad
+                    BEQ         fin
+                    BRA         Continuar
+EsValido:
+                    STAA        0,Y
+                    INY
+                    LDAB        auxCant
+                    CMPB        cantidad
+                    BEQ         fin
+                    BRA         Continuar
+
+
+
+
+            ORG         RESET
+            DW          ROM
