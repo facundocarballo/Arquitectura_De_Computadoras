@@ -25,40 +25,40 @@ maxCaracMinuscula   EQU         122
 ;;;     97 al 122 (Caracteres minuscula)
 
                     ORG         ROM
-                    LDX         dirIni
-                    LDY         dirIniNuevo
+                    LDX         #dirIni                 ;;; MODO INMEDIATO
+                    LDY         #dirIniNuevo            ;;; MODO INMEDIATO
 Loop:            
-                    LDAA        0,X      
-                    CMPA        minNum
-                    BLO         NoEsNada
-                    CMPA        maxNum
-                    BLO         EsValido
-                    CMPA        minCaracMAYUS
-                    BLO         NoEsNada
-                    CMPA        maxCaracMAYUS
-                    BLO         EsValido
-                    CMPA        minCaracMinuscula
-                    BLO         NoEsNada
-                    CMPA        maxCaracMinuscula
-                    BLO         EsValido
+                    LDAA        0,X                     ;;; MODO INDEXADO
+                    CMPA        minNum                  ;;; MODO ABSOLUTO DIRECTO
+                    BLO         NoEsNada                ;;; MODO RELATIVO
+                    CMPA        maxNum                  ;;; MODO ABSOLUTO DIRECTO
+                    BLO         EsValido                ;;; MODO RELATIVO
+                    CMPA        minCaracMAYUS           ;;; MODO ABSOLUTO DIRECTO
+                    BLO         NoEsNada                ;;; MODO RELATIVO
+                    CMPA        maxCaracMAYUS           ;;; MODO ABSOLUTO DIRECTO
+                    BLO         EsValido                ;;; MODO RELATIVO
+                    CMPA        minCaracMinuscula       ;;; MODO ABSOLUTO DIRECTO
+                    BLO         NoEsNada                ;;; MODO RELATIVO
+                    CMPA        maxCaracMinuscula       ;;; MODO ABSOLUTO DIRECTO
+                    BLO         EsValido                ;;; MODO RELATIVO
 Continuar:
-                    INX
-                    INC         auxCant
-                    BRA         Loop
-fin                 BRA         fin
+                    INX                                 ;;; MODO REGISTRO DIRECTO
+                    INC         auxCant                 ;;; MODO ABSOLUTO DIRECTO
+                    BRA         Loop                    ;;; MODO RELATIVO
+fin                 BRA         fin                     ;;; MODO RELATIVO
 
 NoEsNada:
-                    LDAB        auxCant
-                    CMPB        cantidad
-                    BEQ         fin
-                    BRA         Continuar
+                    LDAB        auxCant                 ;;; MODO ABSOLUTO DIRECTO
+                    CMPB        cantidad                ;;; MODO ABSOLUTO DIRECTO
+                    BEQ         fin                     ;;; MODO RELATIVO
+                    BRA         Continuar               ;;; MODO RELATIVO
 EsValido:
-                    STAA        0,Y
-                    INY
-                    LDAB        auxCant
-                    CMPB        cantidad
-                    BEQ         fin
-                    BRA         Continuar
+                    STAA        0,Y                     ;;; MODO INDEXADO
+                    INY                                 ;;; MODO REGISTRO DIRECTO
+                    LDAB        auxCant                 ;;; MODO ABSOLUTO DIRECTO
+                    CMPB        cantidad                ;;; MODO ABSOLUTO DIRECTO
+                    BEQ         fin                     ;;; MODO RELATIVO
+                    BRA         Continuar               ;;; MODO RELATIVO
 
 
 

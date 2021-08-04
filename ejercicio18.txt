@@ -39,94 +39,95 @@ auxFin      RMB         1
 
             ORG         ROM
 Init:   
-            CLRA
-            CLRB
-            STAA        contador
-            STAA        auxFin
-            STAA        encontrado
-            STD         contadorD
+            CLRA                        ;;; MODO REGISTRO DIRECTO
+            CLRB                        ;;; MODO REGISTRO DIRECTO
+            STAA        contador        ;;; MODO ABSOLUTO DIRECTO
+            STAA        auxFin          ;;; MODO ABSOLUTO DIRECTO
+            STAA        encontrado      ;;; MODO ABSOLUTO DIRECTO
+            STD         contadorD       ;;; MODO ABSOLUTO DIRECTO
     
 Main:
-            LDX         dirIni
+            LDX         #dirIni         ;;; MODO INMEDIATO
 Loop:
-            XGDX
-            CPD         #dirFin
-            XGDX
-            BEQ         LlegoDirFin
+            XGDX                        ;;; MODO REGISTRO DIRECTO
+            CPD         #dirFin         ;;; MODO INMEDIATO
+            XGDX                        ;;; MODO REGISTRO DIRECTO
+            BEQ         LlegoDirFin     ;;; MODO RELATIVO
 Continuar:        
-            LDAA        0,X
-            CMPA        #dato
-            BEQ         EsIgual
+            LDAA        0,X             ;;; MODO INDEXADO
+            CMPA        #dato           ;;; MODO INMEDIATO
+            BEQ         EsIgual         ;;; MODO RELATIVO
 
 RetornoEsIgual:
-            LDAA        auxFin
-            CMPA        #1
-            BEQ         PreFin
-            INX
-            INC         contadorD
-            BRA         Loop
-fin         BRA         fin       
+            LDAA        auxFin          ;;; MODO ABSOLUTO DIRECTO
+            CMPA        #1              ;;; MODO INMEDIATO
+            BEQ         PreFin          ;;; MODO RELATIVO
+            INX                         ;;; MODO REGISTRO DIRECTO
+            INC         contadorD       ;;; MODO ABSOLUTO DIRECTO
+            BRA         Loop            ;;; MODO RELATIVO
+fin         BRA         fin             ;;; MODO RELATIVO
             
 LlegoDirFin:
-            LDAA        #1
-            STAA        auxFin
-            CLRA   
-            BRA         Continuar
+            LDAA        #1              ;;; MODO INMEDIATO
+            STAA        auxFin          ;;; MODO ABSOLUTO DIRECTO
+            CLRA                        ;;; MODO REGISTRO DIRECTO
+            BRA         Continuar       ;;; MODO RELATIVO
 
 EsIgual:
 ;;; nos fijamos primero si ya se habia encontrado antes
-            LDAA        contador
-            CMPA        #0
-            BEQ         PrimeraVez
+            LDAA        contador        ;;; MODO ABSOLUTO DIRECTO
+            CMPA        #0              ;;; MODO INMEDIATO
+            BEQ         PrimeraVez      ;;; MODO RELATIVO
 RetornoPrimeraVez:
-            INCA
-            STAA        contador
-            CLRA
-            BRA         RetornoEsIgual
+            INCA                        ;;; MODO REGISTRO DIRECTO
+            STAA        contador        ;;; MODO ABSOLUTO DIRECTO
+            CLRA                        ;;; MODO REGISTRO DIRECTO
+            BRA         RetornoEsIgual  ;;; MODO RELATIVO
 
 PrimeraVez:
 ;;; en el acumulador 'A' esta el valor de contador
-            PSHA
-            LDAB        #1
-            STAB        encontrado
-            LDD         contadorD
-            STD         dirInterior
-            XGDX
-            STD         dirDato
-            XGDX
-            PULA
-            BRA         RetornoPrimeraVez
+            PSHA                        ;;; MODO REGISTRO INDIRECTO
+            LDAB        #1              ;;; MODO INMEDIATO
+            STAB        encontrado      ;;; MODO ABSOLUTO DIRECTO
+            LDD         contadorD       ;;; MODO ABSOLUTO DIRECTO
+            STD         dirInterior     ;;; MODO ABSOLUTO DIRECTO
+            XGDX                        ;;; MODO REGISTRO DIRECTO
+            STD         dirDato         ;;; MODO ABSOLUTO DIRECTO
+            XGDX                        ;;; MODO REGISTRO DIRECTO
+            PULA                        ;;; MODO REGISTRO INDIRECTO
+            BRA         RetornoPrimeraVez   ;;; MODO RELATIVO
 
 PreFin:
-            LDAA        encontrado
-            CMPA        #1
-            BEQ         fin
-            LDAA        #78
-            STAA        LCD
-            LDAA        #79
-            STAA        LCD
-            LDAA        #32
-            LDAA        #69
-            STAA        LCD
-            LDAA        #78
-            STAA        LCD
-            LDAA        #67
-            STAA        LCD
-            LDAA        #79
-            STAA        LCD
-            LDAA        #78
-            STAA        LCD
-            LDAA        #84
-            STAA        LCD
-            LDAA        #82
-            STAA        LCD
-            LDAA        #65
-            STAA        LCD
-            LDAA        #68
-            STAA        LCD
-            LDAA        #79
-            STAA        LCD
-            BRA         fin
+            LDAA        encontrado      ;;; MODO ABSOLUTO DIRECTO
+            CMPA        #1              ;;; MODO INMEDIATO
+            BEQ         fin             ;;; MODO RELATIVO
+            LDAA        #78             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #79             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #32             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #69             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #78             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #67             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #79             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #78             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #84             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #82             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #65             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #68             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #79             ;;; MODO INMEDIATO
+            STAA        LCD             ;;; MODO ABSOLUTO DIRECTO
+            BRA         fin             ;;; MODO RELATIVO
 
 
             ORG         RESET

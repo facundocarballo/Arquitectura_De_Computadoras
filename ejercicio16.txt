@@ -11,19 +11,19 @@ RESET   EQU     $FFFE
 
         ORG     ROM
 Init:
-        LDAA    $00
-        LDAB    #128  
-        CBA
-        BGT     mayor
-        BEQ     cero
+        LDAA    $00                     ;;; MODO PAGINADO
+        LDAB    #128                    ;;; MODO INMEDIATO
+        CBA                             ;;; MODO REGISTRO DIRECTO
+        BGT     mayor                   ;;; MODO RELATIVO
+        BEQ     cero                    ;;; MODO RELATIVO
         ;;; sino saltó, es menor
-        LDAB    #60
-guarda  STAB    $01
-fin     BRA     fin
-mayor   LDAB    #62
-        BRA     guarda
-cero    LDAB    #61
-        BRA     guarda
+        LDAB    #60                     ;;; MODO INMEDIATO
+guarda  STAB    $01                     ;;; MODO PAGINADO
+fin     BRA     fin                     ;;; MODO RELATIVO
+mayor   LDAB    #62                     ;;; MODO INMEDIATO
+        BRA     guarda                  ;;; MODO RELATIVO
+cero    LDAB    #61                     ;;; MODO INMEDIATO
+        BRA     guarda                  ;;; MODO RELATIVO
 
         ORG     RESET
         DW      Init

@@ -38,64 +38,64 @@ contador    RMB         1
 
             ORG         ROM
 Init:   
-            CLRA
-            CLRB
-            STAA        contador
-            STAA        auxFin
-            STD         contadorD
+            CLRA                        ;;; MODO REGISTRO DIRECTO
+            CLRB                        ;;; MODO REGISTRO DIRECTO
+            STAA        contador        ;;; MODO ABSOLUTO DIRECTO
+            STAA        auxFin          ;;; MODO ABSOLUTO DIRECTO
+            STD         contadorD       ;;; MODO ABSOLUTO DIRECTO
     
 Main:
-            LDX         dirIni
-            LDAA        0,X
-            STAA        mayor
-            XGDX        
-            STD         dirMayor
-            XGDX
+            LDX         #dirIni          ;;; MODO INMEDIATO
+            LDAA        0,X              ;;; MODO INDEXADO
+            STAA        mayor            ;;; MODO ABSOLUTO DIRECTO
+            XGDX                         ;;; MODO REGISTRO DIRECTO
+            STD         dirMayor         ;;; MODO ABSOLUTO DIRECTO
+            XGDX                         ;;; MODO REGISTRO DIRECTO
 
 Loop:
-            INX
-            INC         contadorD         
-            XGDX
-            CPD         #dirFin
-            XGDX
-            BEQ         LlegoDirFin
+            INX                          ;;; MODO REGISTRO DIRECTO
+            INC         contadorD        ;;; MODO ABSOLUTO DIRECTO 
+            XGDX                         ;;; MODO REGISTRO DIRECTO
+            CPD         #dirFin          ;;; MODO INMEDIATO
+            XGDX                         ;;; MODO REGISTRO DIRECTO
+            BEQ         LlegoDirFin      ;;; MODO RELATIVO
 Continuar:
-            LDAA        0,X
-            CMPA        mayor
-            BHI         EsMayor
-            BEQ         EsIgual
-            LDAA        #1
-            CMPA        auxFin
-            BEQ         fin
-            BRA         Loop
-fin         BRA         fin
+            LDAA        0,X              ;;; MODO INDEXADO
+            CMPA        mayor            ;;; MODO ABSOLUTO DIRECTO
+            BHI         EsMayor          ;;; MODO RELATIVO
+            BEQ         EsIgual          ;;; MODO RELATIVO
+            LDAA        #1               ;;; MODO INMEDIATO
+            CMPA        auxFin           ;;; MODO ABSOLUTO DIRECTO
+            BEQ         fin              ;;; MODO RELATIVO
+            BRA         Loop             ;;; MODO RELATIVO
+fin         BRA         fin              ;;; MODO RELATIVO
 
 EsMayor: 
-            STAA        mayor
-            XGDX
-            STD         dirMayor
-            XGDX
-            LDD         contadorD
-            STD         dirInterior
-            LDAA        #1
-            CMPA        auxFin
-            BEQ         fin
-            CLRA
-            BRA         Loop
+            STAA        mayor            ;;; MODO ABSOLUTO DIRECTO
+            XGDX                         ;;; MODO REGISTRO DIRECTO
+            STD         dirMayor         ;;; MODO ABSOLUTO DIRECTO
+            XGDX                         ;;; MODO REGISTRO DIRECTO
+            LDD         contadorD        ;;; MODO ABSOLUTO DIRECTO
+            STD         dirInterior      ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #1               ;;; MODO INMEDIATO
+            CMPA        auxFin           ;;; MODO ABSOLUTO DIRECTO
+            BEQ         fin              ;;; MODO RELATIVO
+            CLRA                         ;;; MODO REGISTRO DIRECTO
+            BRA         Loop             ;;; MODO RELATIVO
 
 EsIgual:
-            INC         contador
-            LDAA        #1
-            CMPA        auxFin
-            BEQ         fin
-            CLRA
-            BRA         Loop
+            INC         contador         ;;; MODO ABSOLUTO DIRECTO
+            LDAA        #1               ;;; MODO INMEDIATO
+            CMPA        auxFin           ;;; MODO ABSOLUTO DIRECTO
+            BEQ         fin              ;;; MODO RELATIVO
+            CLRA                         ;;; MODO REGISTRO DIRECTO
+            BRA         Loop             ;;; MODO RELATIVO
 
 LlegoDirFin:
-            LDAA        #1
-            STAA        auxFin 
-            CLRA     
-            BRA         Continuar 
+            LDAA        #1               ;;; MODO INMEDIATO
+            STAA        auxFin           ;;; MODO ABSOLUTO DIRECTO
+            CLRA                         ;;; MODO REGISTRO DIRECTO
+            BRA         Continuar        ;;; MODO RELATIVO
 
             ORG         RESET
             DW          ROM
